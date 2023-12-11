@@ -1,0 +1,109 @@
+<html>
+<body>
+<textarea id="editor"></textarea><button onclick="run()">RUN</button><button onclick="download()">DOWNLOAD</button>
+<input id="in" type="file" accept=".rs">
+</body>
+<script>
+//editor
+function downloadBlob(blob, name = 'file.txt') {
+  // Convert your blob into a Blob URL (a special url that points to an object in the browser's memory)
+  const blobUrl = URL.createObjectURL(blob);
+
+  // Create a link element
+  const link = document.createElement("a");
+
+  // Set link's href to point to the Blob URL
+  link.href = blobUrl;
+  link.download = name;
+
+  // Append link to the body
+  document.body.appendChild(link);
+
+  // Dispatch click event on the link
+  // This is necessary as link.click() does not work on the latest firefox
+  link.dispatchEvent(
+    new MouseEvent('click', { 
+      bubbles: true, 
+      cancelable: true, 
+      view: window 
+    })
+  );
+
+  // Remove link from body
+  document.body.removeChild(link);
+}
+
+function download(){
+	var b = new Blob([editor.value]);
+	downloadBlob(b, prompt("input file name") + ".rs")
+}
+var dmode = true;
+function debug(q){
+	if(dmode == true){
+		console.log(q)
+	}
+}
+var inp = document.getElementById("in");
+var editor = document.getElementById("editor");
+var file;
+var r = new FileReader()
+inp.onchange = function(){
+	r.readAsText(inp.files[0])
+	r.onload = function(){
+		file = r.result;
+		editor.value = file;
+	}
+}
+
+//compiler
+function $(com){
+	let arr = com.split(" ")
+	let func = arr[0];
+	arr.shift()
+	var params = "";
+	for(p in arr){
+		params = params + arr[p] + ",";
+	}
+	params.slice(0,params.length - 1)
+	if(window[func]){
+		eval(func + "(" + params + ")")
+	}
+	else if(editor.value.includes("func " + func)){
+		runFunc(func)
+	}
+	else{
+		alert("'" + func + "' not defined")
+	}
+}
+function runFunc(f){
+	debug("runFunc")
+	var fcode = editor.value.split("func " + f)[1].split("\n");
+	debug(fcode)
+	for(c in fcode){
+		if(fcode[c].includes("}")){break;}
+		else if(fcode[c].includes("{")){
+			continue;
+		}
+		else if(fcode[c] == "" || fcode[c] == " "){
+			continue;
+		}
+		else{
+			$(fcode[c])
+		}
+	}
+}
+function run(){
+	let dt = editor.value.split("\n");
+	for(c in dt){
+		if(dt[c].includes("}")){break;}
+		else if(dt[c].includes("{")){
+			continue
+		}
+		else{
+			$(dt[c])
+		}
+	}
+}
+</script>
+<script src="rs.js"></script>
+</html>

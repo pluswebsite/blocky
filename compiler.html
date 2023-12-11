@@ -1,0 +1,54 @@
+<html>
+<body>
+<input id="in" type="file" accept=".rs"><button onclick="compile()">Compile</button>
+</body>
+<script>
+var inp = document.getElementById("in");
+var file;
+var r = new FileReader()
+inp.onchange = function(){
+	r.readAsText(inp.files[0])
+	r.onload = function(){
+		file = r.result;
+	}
+}
+var doc;
+function compile(){
+	doc = "<html>\n<rscript style='display:none;'>\n" + file + "\n</rscript>\n<script src='https://pluswebsite.github.io/rs/rs.js'>\n<\/script>\n<script src='https://pluswebsite.github.io/rs/rsrun.js'><\/script>\n</html>";
+	download()
+}
+
+function downloadBlob(blob, name = 'file.txt') {
+  // Convert your blob into a Blob URL (a special url that points to an object in the browser's memory)
+  const blobUrl = URL.createObjectURL(blob);
+
+  // Create a link element
+  const link = document.createElement("a");
+
+  // Set link's href to point to the Blob URL
+  link.href = blobUrl;
+  link.download = name;
+
+  // Append link to the body
+  document.body.appendChild(link);
+
+  // Dispatch click event on the link
+  // This is necessary as link.click() does not work on the latest firefox
+  link.dispatchEvent(
+    new MouseEvent('click', { 
+      bubbles: true, 
+      cancelable: true, 
+      view: window 
+    })
+  );
+
+  // Remove link from body
+  document.body.removeChild(link);
+}
+
+function download(){
+	var b = new Blob([doc]);
+	downloadBlob(b, prompt("input file name") + ".html")
+}
+</script>
+</html>
