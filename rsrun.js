@@ -39,7 +39,7 @@ function run(){
 	let dt = doc.innerHTML.split("\n");
 	for(c in dt){
 		if(dt[c].includes("}")){break;}
-		else if(dt[c].includes("{")){
+		else if(dt[c].includes("{") || dt[c] == "" || dt[c] == " "){
 			continue
 		}
 		else{
