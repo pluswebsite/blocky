@@ -19,7 +19,6 @@ function $(com){
 	}
 }
 function runFunc(f){
-	debug("runFunc")
 	var fcode = doc.innerHTML.split("func " + f)[1].split("\n");
 	debug(fcode)
 	for(c in fcode){
