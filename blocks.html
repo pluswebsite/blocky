@@ -1,0 +1,253 @@
+<html>
+<body>
+<div id="left"></div>
+<div id="middle"></div>
+<div id="right"><button id="run" onclick="toCode()">RUN</button><div id="console"></div></div>
+<button id="rem" onclick="removeB()">REMOVE</button>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
+<script src="rs.js"></script>
+<script>
+function debug(q){
+	document.getElementById("console").innerHTML = document.getElementById("console").innerHTML + "<br>" + q;
+}
+var rem = false;
+function mayR(e){
+	if(rem){
+		e.target.remove()
+		rem = false;
+		document.getElementById("rem").classList.remove("rm");
+	}
+}
+function removeB(){
+	if(!rem){
+		rem = true;
+		document.getElementById("rem").classList.add("rm");
+	}
+	else{
+		rem = false;
+		document.getElementById("rem").classList.remove("rm");
+	}
+}
+function $_(com){
+	let arr = com.split(" ")
+	let func = arr[0];
+	arr.shift()
+	var params = "";
+	for(p in arr){
+		params = params + arr[p] + ",";
+	}
+	params.slice(0,params.length - 1)
+	if(window[func]){
+		eval(func + "(" + params + ")")
+	}
+	else if(code.includes("func " + func)){
+		runFunc(func)
+	}
+	else{
+		alert("'" + func + "' not defined")
+	}
+}
+function runFunc(f){
+	var fcode = code.split("func " + f)[1].split("\n");
+	for(c in fcode){
+		if(fcode[c].includes("}")){break;}
+		else if(fcode[c].includes("{")){
+			continue;
+		}
+		else if(fcode[c] == "" || fcode[c] == " "){
+			continue;
+		}
+		else{
+			$_(fcode[c])
+		}
+	}
+}
+var code = "";
+function toCode(){
+	document.getElementById("console").innerHTML = "";
+	code = "";
+	let arr = [];
+	for(c in doc.mid.children){
+		if(!isNaN(c)){
+			arr.push(doc.mid.children[c])
+		}
+	}
+	
+	for(c in arr){
+		let acode = arr[c].com;
+		let n = 1;
+		while(n <= arr[c].i){
+			if(arr[c].getElementsByTagName("input")[n - 1].value[0] == "<"){
+				acode = acode.replace("*p" + n + "*", arr[c].getElementsByTagName("input")[n - 1].value.replace("<","").replace(">",""));
+			} else{
+				acode = acode.replace("*p" + n + "*", "'" + arr[c].getElementsByTagName("input")[n - 1].value + "'");
+			}
+			n = n + 1;
+		}
+		code = code + acode + "\n";
+	}
+	code.slice(0,code.length - 1)
+	run()
+}
+function run(){
+	let dt = code.split("\n");
+	for(c in dt){
+		if(dt[c].includes("}")){break;}
+		else if(dt[c].includes("{") || dt[c] == "" || dt[c] == " "){
+			continue
+		}
+		else{
+			$_(dt[c])
+		}
+	}
+}
+window.onload = function(){
+	new Sortable($('#middle')[0], {
+	    animation: 150,
+	    ghostClass: 'blue-background-class'
+	});
+	
+	//build left panel
+	for(id in blocks){
+		let block = document.createElement("div")
+		block.classList.add("block")
+		let ins = blocks[id].ui;
+		let n = 1;
+		while(n <= blocks[id].par){
+			ins = ins.replace("*p" + n + "*","<input class='bin' id='p" + n + "' type='text'>")
+			n = n+1;
+		}
+		block.innerHTML = ins;
+		block.com = blocks[id].com;
+		block.i = blocks[id].par;
+		block.b = id;
+		block.onclick = preCrB;
+		doc.left.appendChild(block)
+	}
+}
+function preCrB(e){
+	createBlock(e.target.b)
+}
+var doc = {}
+doc.left = document.getElementById("left")
+doc.mid = document.getElementById("middle")
+doc.rig = document.getElementById("right")
+function createBlock(id){
+	let block = document.createElement("div")
+	block.classList.add("block")
+	let ins = blocks[id].ui;
+	let n = 1;
+	while(n <= blocks[id].par){
+		ins = ins.replace("*p" + n + "*","<input class='bin' id='p" + n + "' type='text'>")
+		n = n+1;
+	}
+	block.innerHTML = ins;
+	block.com = blocks[id].com;
+	block.i = blocks[id].par;
+	block.onclick = mayR;
+	doc.mid.appendChild(block)
+}
+</script>
+<script src="blocks.js"></script>
+<style>
+body{
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    background-color: #dbdbdb;
+}
+div{
+    height: 100%;
+}
+#left{
+    width: 20%;
+    border-radius: 0 25px 25px 0;
+    background-color: darkgray;
+    overflow-y: auto;
+}
+#middle{
+    overflow: auto;
+    width: 45%;
+}
+#right{width: 35%;background-color: darkgray;}
+.block{
+    width: min-content;
+    margin: 10px;
+    height: 50px;
+    border-radius: 0 15px 15px 0;
+    background-color: blue;
+    text-align: center;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0 10px;
+    color: white;
+    font-family: sans-serif;
+    font-weight: bolder;
+}
+.bin{
+    border-radius: 25px;
+    width: 50px;
+    border: none;
+    height: 30px;
+}
+.block *{
+    margin: 5px;
+}
+#run{
+    all: unset;
+    margin: 10px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 25px;
+    font-family: sans-serif;
+    font-weight: bolder;
+}
+#run:active{
+	background-color: #dbdbdb;
+}
+#rem{position: absolute !important;all: unset;left: 57%;margin: 10px;background-color: white;padding: 10px;border-radius: 25px;font-family: sans-serif;font-weight: bolder;}
+#rem:active{
+	background-color: darkgray;
+}
+.rm{
+	background-color: red !important;
+	animation: tilt-shaking 1s infinite !important;
+}
+@keyframes tilt-shaking {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  50% { transform: rotate(0eg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+#console{
+    border-radius: 25px;
+    background-color: #dbdbdb;
+    margin: 10px;
+    overflow-y: auto;
+    padding: 10px;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 25px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+</style>
+</html>

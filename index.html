@@ -37,12 +37,6 @@ function download(){
 	var b = new Blob([editor.value]);
 	downloadBlob(b, prompt("input file name") + ".rs")
 }
-var dmode = true;
-function debug(q){
-	if(dmode == true){
-		console.log(q)
-	}
-}
 var inp = document.getElementById("in");
 var editor = document.getElementById("editor");
 var file;
@@ -76,9 +70,7 @@ function $(com){
 	}
 }
 function runFunc(f){
-	debug("runFunc")
 	var fcode = editor.value.split("func " + f)[1].split("\n");
-	debug(fcode)
 	for(c in fcode){
 		if(fcode[c].includes("}")){break;}
 		else if(fcode[c].includes("{")){
