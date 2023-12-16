@@ -13,3 +13,14 @@ Click at 'Function: Main' and then choose the one that you just added and the ed
 ## Blocks
 ### Alert
 This block will create a window with text in it. You can edit this text with the 'text' input.
+
+### Variable set
+Set a variable (first input) with a value (second input).
+
+### Say in console
+Say a text (first input) to the console (the right panel).
+
+### Get data from JSONBin
+Get data from a online database. You need the 'Bin id' and your account 'masterkey'. Using (JSONBin)[https://jsonbin.io/]
+### Set data to JSONBin
+Set a variable in a online database. You set the variable, the value, and then the 'bin id' and the 'masterkey', as in the last block.
