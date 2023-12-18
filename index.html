@@ -74,8 +74,13 @@ window.onclick = function(event) {
 }
 var rem = false;
 function mayR(e){
-	if(rem){
+	if(rem && e.target.nodeName == 'DIV'){
 		e.target.remove()
+		rem = false;
+		document.getElementById("rem").classList.remove("rm");
+	}
+	else if(rem && e.target.nodeName == 'INPUT'){
+		e.target.parentElement.remove()
 		rem = false;
 		document.getElementById("rem").classList.remove("rm");
 	}
