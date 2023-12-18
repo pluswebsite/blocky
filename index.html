@@ -20,9 +20,11 @@ function mayVar(e){
 	let t = e.target.value;
 	if(t[0] == "<" && t[t.length - 1] == ">"){
 		e.target.style.backgroundColor = "lightgreen";
+		e.target.style.textAlign = "center";
 	}
 	else{
 		e.target.style.backgroundColor = "white";
+		e.target.style.textAlign = "left";
 	}
 }
 var nm = {}
