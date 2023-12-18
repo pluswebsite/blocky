@@ -1,0 +1,78 @@
+<html>
+<body>
+<div id="block"></div>
+<div id="buttons">
+<button onclick="addText()">Add Text</button>
+<button onclick="addInput()">Add Input</button>
+<input id="com" code.placeholder="Command">
+<button onclick="getCode()">Get Code</button>
+</div>
+</body>
+<script>
+var code = {}
+function getCode(){
+	let arr = Array.from(block.children);
+	code.ui = "";
+	code.par = 0;
+	code.pl = [];
+	for(e in arr){
+		if(arr[e].classList.contains("text")){
+			code.ui = code.ui + arr[e].value;
+		}
+		else{
+			code.par = code.par+1;
+			code.ui = code.ui +  "*p" + code.par + "*" ;
+			code.pl.push(arr[e].value)
+		}
+	}
+	document.body.innerHTML = JSON.stringify(code)
+}
+document.getElementById("com").onkeyup = function(){
+	code.com = document.getElementById("com").value;
+}
+var block = document.getElementById("block");
+function addText(){
+	let el = document.createElement('input')
+	el.classList.add("text")
+	block.appendChild(el)
+}
+function addInput(){
+	let el = document.createElement('input')
+	el.classList.add("bin")
+	block.appendChild(el)
+}
+</script>
+<style>
+#block{
+    width: min-content;
+    margin: 10px;
+    height: 50px;
+    border-radius: 0 15px 15px 0;
+    background-color: blue;
+    text-align: center;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0 10px;
+    color: white;
+    font-family: sans-serif;
+    font-weight: bolder;
+}
+.text{
+	all: unset;
+	min-width: 10px;
+	height: 20px;
+	width: min-content;
+	background: none;
+}
+.bin{
+    border-radius: 25px;
+    width: 50px;
+    border: none;
+    height: 30px;
+}
+#block *{
+    margin: 5px;
+}
+</style>
+</html>
