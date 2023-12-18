@@ -186,7 +186,11 @@ function toCodeFunc(f, setF=true){
 	if(setF){setFunc(lFunc)}
 }
 function run(){
-	runPart('Main')
+	try {
+	  runPart('Main');
+	} catch (error) {
+	  debug(error.message);
+	}
 }
 function runPart(f){
 	toCodeFunc(f)
