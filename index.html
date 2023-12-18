@@ -16,6 +16,15 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
 <script src="rs.js"></script>
 <script>
+function mayVar(e){
+	let t = e.target.value;
+	if(t[0] == "<" && t[t.length - 1] == ">"){
+		e.target.style.backgroundColor = "lightgreen";
+	}
+	else{
+		e.target.style.backgroundColor = "white";
+	}
+}
 var nm = {}
 nm.JSONBin = 'JSONBin';
 var funcs = {}
@@ -256,6 +265,11 @@ function createBlock(id){
 		document.getElementsByClassName("dropdown-content")[0].innerHTML = document.getElementsByClassName("dropdown-content")[0].innerHTML + "\n" + blocks[id].func;
 	}
 	doc.mid.appendChild(block)
+	n = 1;
+	while(n <= blocks[id].par){
+		block.children[n-1].onkeyup = mayVar;
+		n = n + 1;
+	}
 }
 </script>
 <script src="blocks.js"></script>
